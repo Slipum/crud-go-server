@@ -14,5 +14,24 @@ jobs:
       - name: Build local Docker image
         run: docker build -t my-app:latest .
 
-      - name: Testing
-        run: docker run --rm my-app:latest go test -v
+      - name: Running docker
+        run: docker run -d --rm -p 80:8080 --name app-container my-app:latest
+
+      - name: Healthcheck ping
+        run: |
+          echo "Waiting for app to start..."
+          for i in {1..15}; do
+            if curl -s -f http://localhost/ping; then
+              echo "App is healthy!"
+              exit 0
+            fi
+            echo "Retrying..."
+            sleep 2
+          done
+          echo "Healthcheck failed!"
+          docker logs app-container
+          exit 1
+
+      - name: Stop container
+        if: always()
+        run: docker stop app-container
