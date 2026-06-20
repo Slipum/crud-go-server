@@ -5,6 +5,8 @@ COPY go.mod ./
 # COPY go.sum ./
 RUN go mod download
 COPY . .
+# запуск тестов перед компиляцией
+RUN go test -v ./...
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o app .
 
 
