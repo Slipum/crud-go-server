@@ -14,5 +14,5 @@ jobs:
       - name: Build local Docker image
         run: docker build -t my-app:latest .
 
-      - name: Run Docker container
+      - name: Testing
         run: docker run --rm my-app:latest go test -v
